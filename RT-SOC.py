@@ -1,13 +1,30 @@
+# usage: RT-SOC.py [-h] p d mp s sp
+
+# Real Time Catan, CMD Line Version
+
+# positional arguments:
+#   p           The period of time, in seconds, a turn will last at the beginning of the game
+#   d           The amount the period of time, in seconds, a turn decreases by per turn
+#   mp          The minimum amount of time a turn can last
+#   s           Seasons are enabled
+#   sp          The number of turns a season lasts
+
+# optional arguments:
+#   -h, --help  show this help message and exit
+
 import dice
 import argparse
 import time
 import os
 import pprint as pp
 
-SEASONS_NAMES = ['Summer', 'Fall', 'Winter', 'Spring']
+# Global Variables
+SEASONS_NAMES = ['Summer, +1 Wheat', 'Fall, +1 Timber', 'Winter, +1 Rock', 'Spring, +1 Sheep']
 NUMBER_OF_SEASONS = len(SEASONS_NAMES)
 
+# Main Game Loop
 def main():
+    # Parse command line arguments
     parser = argparse.ArgumentParser(description='Real Time Catan, CMD Line Version')
     parser.add_argument('turnPeriod', metavar='p', type=float, nargs=1, 
         help='The period of time, in seconds, a turn will last at the beginning of the game')
@@ -22,8 +39,9 @@ def main():
 
     args = parser.parse_args()
 
+    # Initialize the state machine and the display object
     sm = state()
-    disp = display()
+    disp = cmdDisplay()
 
     sm.turnPeriod = args.turnPeriod[0]
     sm.turnPerDecay = args.turnPerDecay[0]
@@ -33,6 +51,7 @@ def main():
 
     sm.start()
 
+    # Update the state machine, and display on a loop
     while(True):
         sm.update()
         disp.update(sm)
@@ -51,13 +70,17 @@ class state:
         self.turnBegan = 0.0
         self.turnEnds = 0.0
         self.season = 0 # Summer, Fall, Winter, Spring
-
+    
+    # start(self)
+    # Starts the game
     def start(self):
         self.turnNumber = 0
         self.turnEnds = time.time()
         self.turnPeriod = self.turnPeriod + self.turnPerDecay
         self._nextTurn()
 
+    # update(self)
+    # Checks if the state machine needs to be updated, then updates it
     def update(self):
         currTime = time.time()
         if (currTime - self.turnBegan) > self.turnPeriod:
@@ -66,6 +89,8 @@ class state:
     def getTimeLeftInTurn(self):
         return self.turnEnds - time.time()
 
+    # _nextTurn(self)
+    # Updates the state machine to reflect the values of the next turn
     def _nextTurn(self):
         self.turnNumber = self.turnNumber + 1
         self.season = int(self.turnNumber / self.seasonPeriod) % NUMBER_OF_SEASONS
@@ -83,7 +108,7 @@ class state:
         return dice.roll('2d6')
 
 
-class display:
+class cmdDisplay:
     def __init__(self):
         pass
 
