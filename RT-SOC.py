@@ -17,6 +17,7 @@ import argparse
 import time
 import os
 import pprint as pp
+import json
 
 # Global Variables
 SEASONS_NAMES = ['Summer, +1 Wheat', 'Fall, +1 Timber', 'Winter, +1 Rock', 'Spring, +1 Sheep']
@@ -29,7 +30,7 @@ def main():
     parser.add_argument('turnPeriod', metavar='p', type=float, nargs=1, 
         help='The period of time, in seconds, a turn will last at the beginning of the game')
     parser.add_argument('turnPerDecay', metavar='d', type=float, nargs=1,
-        help='The amount the period of time, in seconds, a turn decreases by per turn')
+        help='The amount of time, in seconds, a turn decreases by per turn')
     parser.add_argument('minTurnPeriod', metavar='mp', type=float, nargs=1,
         help='The minimum amount of time a turn can last')
     parser.add_argument('seasonsOn', metavar='s', type=bool, nargs=1,
@@ -41,7 +42,7 @@ def main():
 
     # Initialize the state machine and the display object
     sm = state()
-    disp = cmdDisplay()
+    disp = jsonDisplay() #cmdDisplay()
 
     sm.turnPeriod = args.turnPeriod[0]
     sm.turnPerDecay = args.turnPerDecay[0]
@@ -70,6 +71,8 @@ class state:
         self.turnBegan = 0.0
         self.turnEnds = 0.0
         self.season = 0 # Summer, Fall, Winter, Spring
+
+        self.timeLeftInTurn = 0
     
     # start(self)
     # Starts the game
@@ -87,7 +90,8 @@ class state:
             self._nextTurn()
 
     def getTimeLeftInTurn(self):
-        return self.turnEnds - time.time()
+        self.timeLeftInTurn = self.turnEnds - time.time()
+        return self.timeLeftInTurn
 
     # _nextTurn(self)
     # Updates the state machine to reflect the values of the next turn
@@ -107,6 +111,15 @@ class state:
     def _rollDice(self):
         return dice.roll('2d6')
 
+class jsonDisplay:
+    def __init__(self):
+        pass
+
+    def update(self, sm):
+        sm.getTimeLeftInTurn()
+        print(json.dumps(sm.__dict__), flush=True)
+
+        time.sleep(0.5)
 
 class cmdDisplay:
     def __init__(self):
