@@ -1,0 +1,101 @@
+<script src="/socket.io/socket.io.js"></script>
+<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+<script>
+  $(function () {
+    var socket = io();
+    $('form').submit(function(e){
+      e.preventDefault(); // prevents page reloading
+      if (this.name == 'send'){
+        socket.emit('chat message', $('#m').val());
+        $('#m').val('');
+      } else if (this.name == 'start'){
+        socket.emit('start', {turnPeriod : $('#turnPeriod').val(), turnPerDecay: $('#turnPerDecay').val() , minTurnPeriod: $('#minTurnPeriod').val(), seasonsOn: $('#seasonsOn').val(), seasonPeriod : $('#seasonPeriod').val()})
+      } else if (this.name == 'stop'){
+        socket.emit('stop', '');
+      }  
+      return false;
+    });
+
+    socket.on('chat message', (msg) => {
+      $('#messages').append($('<li>').text(msg));
+    });
+
+
+    // $('game').submit(function(e){
+    //   e.preventDefault(); // prevent page reload
+    //   socket.emit('start', $('#args').val() );
+    //   $('#args').val('');
+    //   return false;
+    // });
+
+    socket.on('sm', (sm) => {
+      $('#timeLeftInTurn').val(sm.timeLeftInTurn)
+      $('#diceRoll').val(sm.diceRoll)
+      $('#turnNumber').val(sm.turnNumber)
+      $('#turnPeriod').val(sm.turnPeriod)
+      $('#season').val(sm.season)
+    });
+  });
+</script>
+<!doctype html>
+<html>
+  <head>
+    <title>RT-SOC</title>
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      body { font: 13px Helvetica, Arial; }
+      game {background: rgb(253, 231, 102); padding: 3px; position:fixed; right: 50%; top: 0; width: 50%; }
+      game form { background: rgba(145, 145, 145, 0.459); padding: 3px; bottom: 0; width: 50%; }
+      game input { border: 0px; padding: 10px; width: 50%; margin-right: 0.5%; top:0 }
+      game button { width: 80%; background: rgb(130, 224, 255); border: none; padding: 10px;}
+      
+      game output { border: 0px; padding: 10px; width: 50%; margin-right: 0.5%; top:0 }
+
+      chat {background: #eee; padding: 3px; position: fixed; left: 50%; bottom: 0; width: 50%; } 
+      chat form { background: rgba(145, 145, 145, 0.459); padding: 3px; position: fixed; bottom: 0; width: 50%; }
+      chat form input { border: 0; padding: 10px; width: 90%; margin-right: 0.5%; }
+      chat form button { width: 9%; background: rgb(130, 224, 255); border: none; padding: 10px; }
+      chat #messages { list-style-type: none; margin: 0; padding: 0; width: 50%; height: 90% ; margin-bottom: 10%}
+      chat #messages li { padding: 5px 10px; }
+      chat #messages li:nth-child(odd) { background: #eee; }
+    </style>
+  </head>
+  <body>
+    <chat>
+      <ul id="messages"></ul>
+      <form action="" name='send'>
+        <input id="m" autocomplete="off" /><button>Send</button>
+      </form>
+    </chat>
+    <game>
+      <section>
+        <input id="turnPeriod" autocomplete="off" value=100 >Turn Period (s)</input>
+        <input id="turnPerDecay" autocomplete="off" value=1 >Turn Period Decay (s) </input>
+        <input id="minTurnPeriod" autocomplete="off" value=30 >Minimum Turn Period (s) </input>
+        <input id="seasonsOn" autocomplete="off" value='TRUE' >Seasons On (TRUE/FALSE)</input>
+        <input id="seasonPeriod" autocomplete="off" value=10 >Seasons Period (turns)</input>
+      </section>
+      <section>
+        <label>Time Left In Turn (s)<output id="timeLeftInTurn" ></output></label>
+        <label>Dice Roll<output id="diceRoll" ></output></label>
+        <label>Turn Number<output id="turnNumber" ></output></label>
+        <label>Turn Period (s)<output id="turnPeriod" > </output></label>
+        <label>Season<output id="season" ></output></label>
+      </section>
+      <section>
+        <form action="" name='start'>
+          <button>START</button>
+        </form>
+      </section>
+      <section>
+        <form action="" name='stop'>
+          <button>STOP</button>
+        </form>
+      </section>
+    </game>
+
+    <!-- <game action="">
+      <input id="args" autocomplete="off" /><button2>Start</button2>
+    </game> -->
+  </body>
+</html>

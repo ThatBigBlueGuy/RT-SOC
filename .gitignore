@@ -1,0 +1,6 @@
+#ignore log files
+*.log
+log/
+
+#ignore node_modules files, they can be rebuilt from package.json, and package-lock.json
+node_modules/
