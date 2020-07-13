@@ -1,9 +1,12 @@
-var app = require('express')();
+var express = require('express')
+var app = express();
 var http = require('http').createServer(app);
 var io = require('socket.io')(http);
 var spawn = require("child_process").spawn;
 var userCount = 0
 const httpPort = 3000;
+
+app.use(express.static('public'))
 
 app.get('/', (req, res) => {
     res.sendFile(__dirname + '/index.html');
@@ -30,7 +33,7 @@ io.on('connection', (socket) => {
     socket.on('start', (args) =>{
         if (rtsocStarted == false){
             console.log('starting python script ' + args.turnPeriod + args.turnPerDecay + args.minTurnPeriod + args.seasonsOn + args.seasonPeriod)
-            rtsocInstance = spawn('python3', ['RT-SOC.py', args.turnPeriod, args.turnPerDecay, args.minTurnPeriod, args.seasonsOn, args.seasonPeriod ]);
+            rtsocInstance = spawn('python', ['RT-SOC.py', args.turnPeriod, args.turnPerDecay, args.minTurnPeriod, args.seasonsOn, args.seasonPeriod ]);
             rtsocStarted = true
 
             rtsocInstance.stdout.on('data', emitData);
