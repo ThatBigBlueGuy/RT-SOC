@@ -3,6 +3,7 @@
 
 PROGRAM RT_SOC
 IMPLICIT NONE
+!USE fson
 CHARACTER(20) :: season_names(4)
 CHARACTER(1) :: tmp
 INTEGER :: number_of_seasons,p,d,mp,roll,turn,season
