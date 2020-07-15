@@ -2,4 +2,5 @@
 #cd fson
 #cmake .
 #cd ..
-gfortran -fbounds-check -o RT-SOC RT-SOC.f90 -fson
+#gfortran -fbounds-check -o RT-SOC RT-SOC.f90 -fson
+gfortran -fbounds-check -o RT-SOC RT-SOC.f90
