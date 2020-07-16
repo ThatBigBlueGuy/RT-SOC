@@ -7,6 +7,8 @@
     var nextTurnSound = document.createElement('audio');
     nextTurnSound.setAttribute('src', '/sounds/Beep-SoundBible.mp3');
 
+
+
     $('form').submit(function(e){
       e.preventDefault(); // prevents page reloading
       if (this.name == 'send'){
@@ -16,15 +18,14 @@
         nextTurnSound.play();
         socket.emit('start', {turnPeriod : $('#turnPeriod').val(), turnPerDecay: $('#turnPerDecay').val() , minTurnPeriod: $('#minTurnPeriod').val(), seasonsOn: $('#seasonsOn').val(), seasonPeriod : $('#seasonPeriod').val()})
       } else if (this.name == 'stop'){
-        socket.emit('stop', '');
+        socket.emit('stop', ''); 
       }  
       return false;
     });
 
-
-
     socket.on('chat message', (msg) => {
       $('#messages').append($('<li>').text(msg));
+      $('.chat-messages-box').scrollTop($('.chat-messages-box')[0].scrollHeight);
     });
 
     socket.on('sm', (sm) => {
@@ -37,38 +38,46 @@
       $('#turnPeriod').val(sm.turnPeriod)
       $('#season').val(sm.season)
     });
+
+    $(".open-button").click(function() {
+      $("#myForm").css({"display":"block"});
+    });
+
+    $(".cancel").click(function() {
+      $("#myForm").css({"display":"none"});
+    });
+
+    $("#myForm").keypress(function(event){
+      var keycode = (event.keyCode ? event.keyCode : event.which)
+      if (keycode == '13'){ // Enter key
+        socket.emit('chat message', $('#m').val());
+        $('#m').val('');
+      }
+    });
+
   });
 </script>
 <!doctype html>
 <html>
   <head>
     <title>RT-SOC</title>
-    <style>
-      * { margin: 0; padding: 0; box-sizing: border-box; }
-      body { font: 13px Helvetica, Arial; }
-      game {background: rgb(253, 231, 102); padding: 3px; position:fixed; right: 50%; top: 0; width: 50%; }
-      game form { background: rgba(145, 145, 145, 0.459); padding: 3px; bottom: 0; width: 50%; }
-      game input { border: 0px; padding: 10px; width: 50%; margin-right: 0.5%; top:0 }
-      game button { width: 80%; background: rgb(130, 224, 255); border: none; padding: 10px;}
-      
-      game output { border: 0px; padding: 10px; width: 50%; margin-right: 0.5%; top:0 }
-
-      chat {background: #eee; padding: 3px; position: fixed; left: 50%; bottom: 0; width: 50%; } 
-      chat form { background: rgba(145, 145, 145, 0.459); padding: 3px; position: fixed; bottom: 0; width: 50%; }
-      chat form input { border: 0; padding: 10px; width: 90%; margin-right: 0.5%; }
-      chat form button { width: 9%; background: rgb(130, 224, 255); border: none; padding: 10px; }
-      chat #messages { list-style-type: none; margin: 0; padding: 0; width: 50%; height: 90% ; margin-bottom: 10%}
-      chat #messages li { padding: 5px 10px; }
-      chat #messages li:nth-child(odd) { background: #eee; }
-    </style>
+    <link rel="stylesheet" href="style.css"/>
   </head>
   <body>
-    <chat>
-      <ul id="messages"></ul>
-      <form action="" name='send'>
-        <input id="m" autocomplete="off" /><button>Send</button>
+    <button class="open-button">Chat</button>
+
+    <div class="chat-popup" id="myForm">
+      <div class="chat-messages-box">
+        <ul id="messages"></ul>
+      </div>
+      
+      <form action="" class="form-container" name="send"> 
+        <textarea type="submit" id="m" placeholder="Type message.." name="msg" required></textarea>
+        <button type="submit" class="btn">Send</button>
+        <button id="btn-cancel" type="button" class="btn cancel">Close</button>
       </form>
-    </chat>
+    </div>
+
     <game>
       <section>
         <input id="turnPeriod" autocomplete="off" value=100 >Turn Period (s)</input>
@@ -95,9 +104,8 @@
         </form>
       </section>
     </game>
+    <script>
 
-    <!-- <game action="">
-      <input id="args" autocomplete="off" /><button2>Start</button2>
-    </game> -->
+    </script>
   </body>
 </html>
