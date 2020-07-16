@@ -1,0 +1,130 @@
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { 
+    font: 13px Helvetica, Arial; 
+}
+game {
+    background: rgb(253, 231, 102); 
+    padding: 3px; 
+    position:fixed; 
+    right: 50%; top: 0; 
+    width: 50%; 
+}
+game form { 
+    background: rgba(145, 145, 145, 0.459); 
+    padding: 3px; 
+    bottom: 0; 
+    width: 50%; 
+}
+
+game input { 
+    border: 0px; 
+    padding: 10px; 
+    width: 50%; 
+    margin-right: 0.5%; 
+    top:0 
+}
+
+game button { 
+    width: 80%; 
+    background: rgb(130, 224, 255); 
+    border: none; 
+    padding: 10px;}
+
+game output { 
+    border: 0px; 
+    padding: 10px; 
+    width: 50%; 
+    margin-right: 0.5%; 
+    top:0 
+}
+
+/* Button used to open the chat form - fixed at the bottom of the page */
+.open-button {
+  background-color: #555;
+  color: white;
+  padding: 16px 20px;
+  border: none;
+  cursor: pointer;
+  opacity: 0.8;
+  position: fixed;
+  bottom: 23px;
+  right: 28px;
+  width: 280px;
+}
+
+/* The popup chat - hidden by default */
+.chat-popup {
+  display: none;
+  position: fixed;
+  bottom: 0;
+  right: 15px;
+  border: 3px solid #f1f1f1;
+  z-index: 9;
+}
+
+/* Add styles to the form container */
+.form-container {
+  max-width: 300px;
+  max-height: 400px;
+  padding: 10px;
+  background-color: white;
+}
+
+/* Full-width textarea */
+.form-container textarea {
+  width: 100%;
+  padding: 15px;
+  margin: 5px 0 22px 0;
+  border: none;
+  background: #f1f1f1;
+  resize: none;
+  height: 60px;
+}
+
+/* When the textarea gets focus, do something */
+.form-container textarea:focus {
+  background-color: #ddd;
+  outline: none;
+}
+
+/* Set a style for the submit/login button */
+.form-container .btn {
+  background-color: #4CAF50;
+  color: white;
+  padding: 16px 20px;
+  border: none;
+  cursor: pointer;
+  width: 100%;
+  margin-bottom:10px;
+  opacity: 0.8;
+}
+
+/* Add a red background color to the cancel button */
+.form-container .cancel {
+  background-color: red;
+}
+
+/* Add some hover effects to buttons */
+.form-container .btn:hover, .open-button:hover {
+  opacity: 1;
+}
+
+.chat-popup .chat-messages-box {
+  background: rgb(194, 194, 194);
+  padding: 5px;
+  height: 300px;
+  overflow-y: auto;
+}
+
+/* make a list of messages to append to */
+.chat-popup #messages { 
+  list-style-type: none; 
+  margin: 0; 
+  padding: 0; 
+  width: 100%; 
+}
+
+.chat-popup #messages li { 
+  padding: 5px 10px; 
+  background: rgb(255, 255, 255); 
+}
