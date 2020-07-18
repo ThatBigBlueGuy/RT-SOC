@@ -1,25 +1,31 @@
 <script src="/socket.io/socket.io.js"></script>
 <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
 <script>
+  var gameStart = false
+  var firstSMObjReceived = false
+  const timerIntervalmS = 10
+  const timerDecPlaces = 2
+
+  const season_text = ['Summer, +1 Wheat', 'Fall, +1 Timber', 'Winter, +1 Rock', 'Spring, +1 Sheep']
+
+  var turnPeriod = 100
+  var turnPerDecay = 1
+  var minTurnPeriod = 30
+  var seasonsOn = true
+  var seasonPeriod = 10
+  var turnNumber = 0
 
   $(function () {
     var socket = io();
     var nextTurnSound = document.createElement('audio');
     nextTurnSound.setAttribute('src', '/sounds/Beep-SoundBible.mp3');
 
-
-
     $('form').submit(function(e){
       e.preventDefault(); // prevents page reloading
       if (this.name == 'send'){
         socket.emit('chat message', $('#m').val());
         $('#m').val('');
-      } else if (this.name == 'start'){
-        nextTurnSound.play();
-        socket.emit('start', {turnPeriod : $('#turnPeriod').val(), turnPerDecay: $('#turnPerDecay').val() , minTurnPeriod: $('#minTurnPeriod').val(), seasonsOn: $('#seasonsOn').val(), seasonPeriod : $('#seasonPeriod').val()})
-      } else if (this.name == 'stop'){
-        socket.emit('stop', ''); 
-      }  
+      }
       return false;
     });
 
@@ -29,14 +35,18 @@
     });
 
     socket.on('sm', (sm) => {
-      $('#timeLeftInTurn').val(sm.timeLeftInTurn)
-      $('#diceRoll').val(sm.diceRoll)
-      if ($('#turnNumber').val() != sm.turnNumber){
+      firstSMObjReceived = true
+      $('#timeLeftInTurn').html((sm.timeLeftInTurn).toFixed(timerDecPlaces));
+      
+      $('#diceRoll').html(sm.diceRoll[0] + " , " + sm.diceRoll[1])
+
+      if (turnNumber != sm.turnNumber){
         nextTurnSound.play();
       }
-      $('#turnNumber').val(sm.turnNumber)
-      $('#turnPeriod').val(sm.turnPeriod)
-      $('#season').val(sm.season)
+      $('#turnNumber').html("Turn #" + sm.turnNumber);
+      turnNumber = sm.turnNumber
+
+      $('#season').html(season_text[sm.season]);   
     });
 
     $(".open-button").click(function() {
@@ -55,7 +65,111 @@
       }
     });
 
+    $(".btn-start").click(function(){
+      $(".btn-start").css({"display":"none"});
+      $(".btn-stop").css({"display":"inline"})
+      gameStart=true
+      socket.emit('start', {turnPeriod : turnPeriod, turnPerDecay: turnPerDecay , minTurnPeriod: minTurnPeriod, seasonsOn: seasonsOn, seasonPeriod : seasonPeriod})
+    })
+
+    $(".btn-stop").click(function(){
+      $(".btn-stop").css({"display":"none"});
+      $(".btn-start").css({"display":"inline"})
+      gameStart=false
+      socket.emit('stop', ''); 
+      firstSMObjReceived = false
+    })
+
+    $(".tabLinks").click(function(){
+      $("#turnPeriod").val(turnPeriod);
+      $("#turnPerDecay").val(turnPerDecay);
+      $("#minTurnPeriod").val(minTurnPeriod);
+      $("#seasonsOn").attr("checked", seasonsOn);
+      $("#seasonPeriod").val(seasonPeriod)
+
+
+      $(".tabLinks").removeClass("active");
+      $(".tabcontent").removeClass("active");
+      var tabContents;
+      $(this).addClass("active")
+      
+      if ($(this).attr('id') == "tab-btn-game"){
+        tabContents = $(".game")
+      } else if( $(this).attr('id') == "tab-btn-settings"){
+        tabContents = $(".settings")
+      } else if( $(this).attr('id') == "tab-btn-howTo"){
+        tabContents = $(".howTo")
+      }
+
+      tabContents.addClass("active")
+    });
+
+    function checkValuesOfBoxes(){
+      if (turnPeriod <= 5){
+        turnPeriod = 5;
+      }
+      if (turnPeriod > 1000){
+        turnPeriod = 1000;
+      }
+      $("#turnPeriod").val(turnPeriod)
+
+      if (turnPerDecay < 0){
+          turnPerDecay = 1;
+        }
+        if (turnPerDecay >= turnPeriod){
+          turnPerDecay = turnPeriod - 1;
+        }
+      $("#turnPerDecay").val(turnPerDecay)
+
+      if (minTurnPeriod > turnPeriod){
+        minTurnPeriod = turnPeriod;
+      }
+      if (minTurnPeriod <= 0){
+        minTurnPeriod = 5;
+      }
+      $("#minTurnPeriod").val(minTurnPeriod)
+
+      seasonPeriod = parseInt($("#seasonPeriod").val())
+      if (seasonPeriod <= 0){
+        seasonPeriod = 10;
+      }
+      $("#seasonPeriod").val(seasonPeriod)
+    }
+
+    $("#turnPeriod").change(function(){
+      turnPeriod = parseFloat($("#turnPeriod").val())
+      checkValuesOfBoxes();
+    })
+
+    $("#turnPerDecay").change(function(){
+      turnPerDecay = parseFloat($("#turnPerDecay").val())
+      checkValuesOfBoxes();
+    })
+
+    $("#minTurnPeriod").change(function(){
+      minTurnPeriod = parseFloat($("#minTurnPeriod").val())
+      checkValuesOfBoxes();
+    })
+
+    $("#seasonsOn").change(function(){
+      seasonsOn = $("#seasonsOn").is(":checked")
+    })
+
+    $("#seasonPeriod").change(function(){
+      checkValuesOfBoxes();
+    })
   });
+  // var countDownDate = new Date("Jan 5, 2021 15:37:25").getTime();
+
+  setInterval(function() {
+    if (firstSMObjReceived){
+      var timeLeftInTurn = parseFloat($('#timeLeftInTurn').html())
+      $('#timeLeftInTurn').html((timeLeftInTurn - timerIntervalmS / 1000).toFixed(timerDecPlaces))
+    }
+  }, timerIntervalmS);
+
+
+
 </script>
 <!doctype html>
 <html>
@@ -64,6 +178,69 @@
     <link rel="stylesheet" href="style.css"/>
   </head>
   <body>
+
+    <div class="tab">
+      <button id="tab-btn-game" class="tabLinks active">Game</button>
+      <button id="tab-btn-settings" class="tabLinks">Settings</button>
+      <button id="tab-btn-howTo" class="tabLinks">How To Play</button>
+    </div>
+
+    <div class="game tabcontent active">
+      <h1 id="diceRoll"></h1>
+      <h1 id="timeLeftInTurn"></h1>
+      <h2 id="season"></h1>
+      <h2 id="turnNumber"></h1>
+      <button class="btn-start">START</button>
+      <button class="btn-stop">STOP</button>
+    </div>
+
+    <div class="settings tabcontent">
+      <form>
+        <div>
+          <label for="turnPeriod">Turn Period (s)</label>
+          <input type="number" id="turnPeriod">
+        </div>
+
+        <div>
+          <label for="turnPerDecay">Turn Period Decay (s)</label>
+          <input type="number" id="turnPerDecay">
+        </div>
+        
+        <div>
+          <label for="minTurnPeriod">Minimum Turn Period (s)</label>
+          <input type="number" id="minTurnPeriod">
+        </div>
+
+        <div>
+          <label for="seasonsOn">Seasons Enabled</label>
+          <input type="checkbox" id="seasonsOn">
+        </div>
+        
+        <div>
+          <label for="seasonPeriod">Seasons Period (turns)</label>
+          <input type="number" id="seasonPeriod">
+        </div>
+      </form>
+    </div>
+
+    <div class="howTo tabcontent">
+      <p>Real Time Settlers of Catan</p>
+      <p>A reimagining of Settlers of Catan as fast paced</p>
+      <p>Additional Rules</p>
+      <ol>
+      <li>Everyone goes at once
+      There are no turns, everyone draws their resource cards at once
+      Everyone puts down roads, towns and cities at once. The first one down wins.</li>
+      <li>Seasons give bonus items
+      Draw +1 Rock in Winter, +1 Wheat in summer, +1 Timber in Fall, and +1 Sheep in Spring</li>
+      </ol>
+      <p>Run RT-SOC.py by installing python, then opening a cmd window in the clone directory and entering
+      python RT-SOC.py 100 0.5 5 TRUE 10
+      That will begin the game with 100 second turns, and 10 turn seasons turned on</p>
+      <p>The program will roll for you, tell you what turn it is, display the season, and the time left in the turn.</p>
+      <p>Good luck!</p>
+    </div>
+
     <button class="open-button">Chat</button>
 
     <div class="chat-popup" id="myForm">
@@ -78,34 +255,5 @@
       </form>
     </div>
 
-    <game>
-      <section>
-        <input id="turnPeriod" autocomplete="off" value=100 >Turn Period (s)</input>
-        <input id="turnPerDecay" autocomplete="off" value=1 >Turn Period Decay (s) </input>
-        <input id="minTurnPeriod" autocomplete="off" value=30 >Minimum Turn Period (s) </input>
-        <input id="seasonsOn" autocomplete="off" value='TRUE' >Seasons On (TRUE/FALSE)</input>
-        <input id="seasonPeriod" autocomplete="off" value=10 >Seasons Period (turns)</input>
-      </section>
-      <section>
-        <label>Time Left In Turn (s)<output id="timeLeftInTurn" ></output></label>
-        <label>Dice Roll<output id="diceRoll" ></output></label>
-        <label>Turn Number<output id="turnNumber" ></output></label>
-        <label>Turn Period (s)<output id="turnPeriod" > </output></label>
-        <label>Season<output id="season" ></output></label>
-      </section>
-      <section>
-        <form action="" name='start'>
-          <button>START</button>
-        </form>
-      </section>
-      <section>
-        <form action="" name='stop'>
-          <button>STOP</button>
-        </form>
-      </section>
-    </game>
-    <script>
-
-    </script>
   </body>
 </html>

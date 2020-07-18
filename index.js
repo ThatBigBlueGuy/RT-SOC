@@ -33,7 +33,7 @@ io.on('connection', (socket) => {
 
     socket.on('start', (args) =>{
         if (rtsocStarted == false){
-            console.log('starting python script ' + args.turnPeriod + args.turnPerDecay + args.minTurnPeriod + args.seasonsOn + args.seasonPeriod)
+            console.log('starting python script ' + args.turnPeriod +" " +  args.turnPerDecay +" " + args.minTurnPeriod +" " + args.seasonsOn +" " + args.seasonPeriod)
             rtsocInstance = spawn('python', ['RT-SOC.py', args.turnPeriod, args.turnPerDecay, args.minTurnPeriod, args.seasonsOn, args.seasonPeriod ]);
             rtsocStarted = true
 
