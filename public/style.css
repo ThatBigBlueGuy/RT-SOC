@@ -1,0 +1,248 @@
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { 
+    font: 13px Helvetica, Arial; 
+}
+
+/* Style the tab */
+.tab {
+  overflow: hidden;
+  border-top: 5px solid #b8b8b8;
+  background-color: #b8b8b8;
+}
+
+/* Style the buttons that are used to open the tab content */
+.tab button {
+  background-color: inherit;
+  float: left;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  padding: 14px 16px;
+}
+
+/* Change background color of buttons on hover */
+.tab button:hover {
+  background-color: #ddd;
+}
+
+/* Create an active/current tablink class */
+.tab button.active {
+  background-color: #ffffff;
+}
+
+.tabcontent {
+  display : none;
+}
+
+.tabcontent.active {
+  display : inline;
+}
+
+.settings {
+  position : absolute;
+  top: 50%;
+  left: 50%;
+  -ms-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+  text-align: center;
+  padding: 50px;
+  width : 100%;
+}
+
+.settings div {
+  width : 100%; 
+  height : 40px; 
+}
+
+.settings div label {
+  vertical-align : middle;
+  float : left;
+  width: 50%;
+  text-align: right;
+}
+
+.settings div input, div select, div textarea {
+  float : left;
+  width : 50%;
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+  margin-top: 6px;
+  margin-bottom: 16px;
+  resize: vertical;
+  padding-right : 40px;
+}
+
+.settings .btn-update-settings{
+  padding : 5px;
+  font: 20px Helvetica, Arial;
+  background-color : green;
+}
+
+.howto.tabcontent *{
+  padding : 5px;
+  font: 20px Helvetica, Arial;
+  margin-bottom : 5px;
+}
+
+.howto.tabcontent div{
+  margin: auto;
+  width: 60%;
+}
+
+.howto.tabcontent h1{
+  font-weight : bold;
+  text-align: center;
+  font: 30px Helvetica, Arial;
+  
+}
+
+.howto.tabcontent h2{
+  text-align: center;
+  font-style: italic;
+  font-weight: normal;
+  margin-bottom : 30px
+}
+
+.howto.tabcontent h3{
+  text-align: center;
+  font-style: italic;
+  font-weight: normal;
+  font: 15px Helvetica, Arial;
+}
+
+button {
+  opacity : 0.8;
+}
+
+button:hover {
+  opacity : 1;
+}
+
+/* Center the game in the window */
+.game {
+  position : absolute;
+  top: 50%;
+  left: 50%;
+  -ms-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+  text-align: center;
+  padding: 50px;
+  width:100%
+}
+
+/* Header for the timer and temporarily the dice*/
+.game h1 {
+  font: 100px Helvetica, Arial;
+}
+
+/* Header for seasons and turn number */
+.game h2 {
+  font: 30px Helvetica, Arial;
+}
+
+/* Buttons to start and stop the game */
+.game .btn-start, .btn-stop{
+  width : 30%;
+  font: 60px Helvetica, Arial;
+}
+
+.game .btn-start{
+  background-color: green;
+}
+
+.game .btn-stop {
+  background-color: red;
+  display : none;
+}
+
+/* Button used to open the chat form - fixed at the bottom of the page */
+.open-button {
+  background-color: #555;
+  color: white;
+  padding: 16px 20px;
+  border: none;
+  cursor: pointer;
+  position: fixed;
+  bottom: 23px;
+  right: 28px;
+  width: 280px;
+}
+
+/* The popup chat - hidden by default */
+.chat-popup {
+  display: none;
+  position: fixed;
+  bottom: 0;
+  right: 15px;
+  border: 3px solid #f1f1f1;
+  z-index: 9;
+}
+
+/* Add styles to the form container */
+.form-container {
+  max-width: 300px;
+  max-height: 400px;
+  padding: 10px;
+  background-color: white;
+}
+
+/* Full-width textarea */
+.form-container textarea {
+  width: 100%;
+  padding: 15px;
+  margin: 5px 0 22px 0;
+  border: none;
+  background: #f1f1f1;
+  resize: none;
+  height: 60px;
+}
+
+/* When the textarea gets focus, do something */
+.form-container textarea:focus {
+  background-color: #ddd;
+  outline: none;
+}
+
+/* Set a style for the submit/login button */
+.form-container .btn {
+  background-color: #4CAF50;
+  color: white;
+  padding: 16px 20px;
+  border: none;
+  cursor: pointer;
+  width: 100%;
+  margin-bottom:10px;
+  opacity: 0.8;
+}
+
+/* Add a red background color to the cancel button */
+.form-container .cancel {
+  background-color: red;
+}
+
+/* Add some hover effects to buttons */
+.form-container .btn:hover, .open-button:hover {
+  opacity: 1;
+}
+
+.chat-popup .chat-messages-box {
+  background: rgb(194, 194, 194);
+  padding: 5px;
+  height: 300px;
+  overflow-y: auto;
+}
+
+/* make a list of messages to append to */
+.chat-popup #messages { 
+  list-style-type: none; 
+  margin: 0; 
+  padding: 0; 
+  width: 100%; 
+}
+
+.chat-popup #messages li { 
+  padding: 5px 10px; 
+  background: rgb(255, 255, 255); 
+}

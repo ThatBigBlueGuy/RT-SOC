@@ -9,12 +9,13 @@ const httpPort = 3000;
 app.use(express.static('public'))
 
 app.get('/', (req, res) => {
-    res.sendFile(__dirname + '/index.html');
+    res.sendFile(__dirname + '/public/index.html');
 });
 
 io.on('connection', (socket) => {
     var rtsocInstance;
     var rtsocStarted = false
+
     userCount = userCount + 1
     var userNumber = userCount
     console.log('user ' + userNumber + ' connected');
@@ -32,7 +33,9 @@ io.on('connection', (socket) => {
 
     socket.on('start', (args) =>{
         if (rtsocStarted == false){
-            console.log('starting python script ' + args.turnPeriod + args.turnPerDecay + args.minTurnPeriod + args.seasonsOn + args.seasonPeriod)
+            var logMessage = 'user ' + userNumber + ' starting python script ' + args.turnPeriod +" " +  args.turnPerDecay +" " + args.minTurnPeriod +" " + args.seasonsOn +" " + args.seasonPeriod
+            console.log(logMessage)
+            io.emit(logMessage)
             rtsocInstance = spawn('python', ['RT-SOC.py', args.turnPeriod, args.turnPerDecay, args.minTurnPeriod, args.seasonsOn, args.seasonPeriod ]);
             rtsocStarted = true
 
@@ -46,11 +49,13 @@ io.on('connection', (socket) => {
 
             function emitData(smJSON){
                 var sm = JSON.parse(smJSON);
-                io.emit('sm', sm);
+                io.to(socket.id).emit('sm', sm);
             }
 
             function killrtsoc(){
-                console.log("python process closed");
+                var logMessage = 'user ' + userNumber + " python process closed"
+                console.log(logMessage);
+                io.emit(logMessage);
                 rtsocStarted = false;
                 
                 rtsocInstance.stdout.off('data', emitData);
