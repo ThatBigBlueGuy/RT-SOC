@@ -60,8 +60,7 @@
     $("#myForm").keypress(function(event){
       var keycode = (event.keyCode ? event.keyCode : event.which)
       if (keycode == '13'){ // Enter key
-        socket.emit('chat message', $('#m').val());
-        $('#m').val('');
+        $(".form-container").submit();
       }
     });
 
@@ -163,8 +162,11 @@
 
   setInterval(function() {
     if (firstSMObjReceived){
-      var timeLeftInTurn = parseFloat($('#timeLeftInTurn').html())
-      $('#timeLeftInTurn').html((timeLeftInTurn - timerIntervalmS / 1000).toFixed(timerDecPlaces))
+      var timeLeftInTurn = (parseFloat($('#timeLeftInTurn').html())- timerIntervalmS / 1000).toFixed(timerDecPlaces)
+      if (timeLeftInTurn < 0){
+        timeLeftInTurn = "0.00"
+      }
+      $('#timeLeftInTurn').html(timeLeftInTurn)
     }
   }, timerIntervalmS);
 
