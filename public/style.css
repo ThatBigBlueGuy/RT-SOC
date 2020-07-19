@@ -80,6 +80,38 @@ body {
   background-color : green;
 }
 
+.howto.tabcontent *{
+  padding : 5px;
+  font: 20px Helvetica, Arial;
+  margin-bottom : 5px;
+}
+
+.howto.tabcontent div{
+  margin: auto;
+  width: 60%;
+}
+
+.howto.tabcontent h1{
+  font-weight : bold;
+  text-align: center;
+  font: 30px Helvetica, Arial;
+  
+}
+
+.howto.tabcontent h2{
+  text-align: center;
+  font-style: italic;
+  font-weight: normal;
+  margin-bottom : 30px
+}
+
+.howto.tabcontent h3{
+  text-align: center;
+  font-style: italic;
+  font-weight: normal;
+  font: 15px Helvetica, Arial;
+}
+
 button {
   opacity : 0.8;
 }

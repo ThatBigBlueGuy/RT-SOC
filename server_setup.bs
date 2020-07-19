@@ -4,6 +4,6 @@ git clone https://github.com/ThatBigBlueGuy/RT-SOC
 sudo iptables -t nat -I PREROUTING -p tcp --dport 80 -j REDIRECT --to-port 3000
 python3 -m pip install -r requirements.txt
 
-# setsid node index.js >> log.txt
+# setsid node index.js > log.txt
 # netstat -lntp
 # kill psid

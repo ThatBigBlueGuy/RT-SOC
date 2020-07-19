@@ -45,8 +45,12 @@
       }
       $('#turnNumber').html("Turn #" + sm.turnNumber);
       turnNumber = sm.turnNumber
-
-      $('#season').html(season_text[sm.season]);   
+      
+      if (seasonsOn){
+        $('#season').html(season_text[sm.season]);   
+      } else {
+        $('#season').html('');
+      }
     });
 
     $(".open-button").click(function() {
@@ -226,21 +230,27 @@
     </div>
 
     <div class="howTo tabcontent">
-      <p>Real Time Settlers of Catan</p>
-      <p>A reimagining of Settlers of Catan as fast paced</p>
-      <p>Additional Rules</p>
-      <ol>
-      <li>Everyone goes at once
-      There are no turns, everyone draws their resource cards at once
-      Everyone puts down roads, towns and cities at once. The first one down wins.</li>
-      <li>Seasons give bonus items
-      Draw +1 Rock in Winter, +1 Wheat in summer, +1 Timber in Fall, and +1 Sheep in Spring</li>
-      </ol>
-      <p>Run RT-SOC.py by installing python, then opening a cmd window in the clone directory and entering
-      python RT-SOC.py 100 0.5 5 TRUE 10
-      That will begin the game with 100 second turns, and 10 turn seasons turned on</p>
-      <p>The program will roll for you, tell you what turn it is, display the season, and the time left in the turn.</p>
-      <p>Good luck!</p>
+      <div>
+        <h1>Real Time Settlers of Catan</h1>
+        <h2>A reimagning of Settlers of Catan as a real time strategy game</h2>
+        <p>Additional Rules</p>
+        <ol>
+          <li>There are no individual turns! Every one goes at once.
+            <p>Everyone draws their resource cards at once.</p>
+            <p>Everyone puts down roads, towns and cities at once. The first one down wins!</p>
+          </li>
+          <li>The turns are timed!</li>
+          <li>There is no robber.</li>
+          <li>Optionally enable seasons that give bonus items.
+            <p>Draw +1 Rock in Winter, +1 Wheat in summer, +1 Timber in Fall, and +1 Sheep in Spring</p>
+          </li>
+        </ol>
+        <p>The addition of these rules makes it necessary to use this website. The game tab displays the dice roll for each turn, keeps track of the time left in the turn, displays the season. Just hit start!</p>
+        <p>Change the game settings in the settings tab. Change the default turn time, and enable/disable seasons. 
+          The game turns can even be configured to decrease in length as the game goes on. Use the "Turn Period Decay" to control how much time is subtracted from the turn period every turn! This makes endgame come much faster.</p>
+        <p>Good luck!</p>
+        <h3>-TBBG</h3>
+      </div>
     </div>
 
     <button class="open-button">Chat</button>
