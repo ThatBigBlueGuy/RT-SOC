@@ -45,7 +45,7 @@ s3transfer==0.3.3
 scipy==1.4.1
 six==1.14.0
 traitlets==4.3.3
-urllib3==1.25.9
+urllib3==1.26.5
 wcwidth==0.1.9
 wrapt==1.11.2
 zerorpc==0.6.3
